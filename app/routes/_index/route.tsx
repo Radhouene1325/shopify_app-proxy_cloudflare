@@ -42,6 +42,7 @@ export default function App() {
         )}
         <ul className={styles.list}>
           <li>
+            winkom louled
             <strong>Product feature</strong>. Some detail about your feature and
             its benefit to your customer.
           </li>
