@@ -18,7 +18,8 @@
     "graphql-codegen": "graphql-codegen",
     "vite": "vite",
     "publish": "npm run build && wrangler deploy --keep-vars",
-    "tsc": "tsc -p tsconfig.js.json"
+    "format": "prettier -w .",
+    "typecheck": "tsc --noEmit"
   },
   "type": "module",
   "engines": {
