@@ -36,7 +36,7 @@ export default function App() {
               <span>e.g: my-shop-domain.myshopify.com</span>
             </label>
             <button className={styles.button} type="submit">
-              Log in
+              Log in hello
             </button>
           </Form>
         )}
