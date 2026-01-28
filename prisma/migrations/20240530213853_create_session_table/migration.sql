@@ -5,7 +5,7 @@ CREATE TABLE "Session" (
     "state" TEXT NOT NULL,
     "isOnline" BOOLEAN NOT NULL DEFAULT false,
     "scope" TEXT,
-    "expires" TIMESTAMP,
+    "expires" DATETIME,
     "accessToken" TEXT NOT NULL,
     "userId" BIGINT,
     "firstName" TEXT,
@@ -14,5 +14,7 @@ CREATE TABLE "Session" (
     "accountOwner" BOOLEAN NOT NULL DEFAULT false,
     "locale" TEXT,
     "collaborator" BOOLEAN DEFAULT false,
-    "emailVerified" BOOLEAN DEFAULT false
+    "emailVerified" BOOLEAN DEFAULT false,
+    "refreshToken" TEXT,
+    "refreshTokenExpires" DATETIME
 );
