@@ -10,20 +10,21 @@ on:
 jobs:
   convert-ts-files:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout Repo
         uses: actions/checkout@v2
 
+      - name: Create lock file
+        run: touch yarn.lock
+
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v3
         with:
-          node-version-file: .nvmrc
-          cache: 'npm'
+          node-version: 18.20.x
+          cache: 'yarn'
 
       - name: Install dependencies
-        run: |
-          npm install --no-save @shopify/eslint-plugin --legacy-peer-deps --engine-strict=false
+        run: yarn add -W --dev @shopify/eslint-plugin --ignore-engines
 
       - name: Create temporary tsconfig file
         run: |
@@ -46,7 +47,7 @@ jobs:
           }' > tsconfig.js.json
 
       - name: Transpile to Javascript
-        run: npx tsc -p tsconfig.js.json
+        run: yarn tsc -p tsconfig.js.json
 
       - name: Remove Typescript files
         run: |
@@ -54,28 +55,22 @@ jobs:
           find . \( -name ".graphqlrc.ts" -o -name "tsconfig.js.json" -o -name "vite.config.ts" \) -delete
 
       - name: Run prettier
-        run: npx prettier -w "app/**/*.{js,jsx}" ".graphqlrc.js" "vite.config.js"
+        run: yarn prettier -w "app/**/*.{js,jsx}" ".graphqlrc.js" "vite.config.js"
 
       - name: Run ESLint
         run: |
-          npx eslint "app/**/*.{js,jsx}" ".graphqlrc.js" "vite.config.js" \
-            --fix \
-            --no-cache \
-            --ignore-pattern "\!.graphqlrc.js" \
-            --plugin @shopify/eslint-plugin \
-            --rule '{
-              "import/order": "error",
-              "import/newline-after-import": "error",
-              "padding-line-between-statements": ["error",
-                { "blankLine": "always", "prev": ["const", "let", "var"], "next": "*" },
-                { "blankLine": "any",    "prev": ["const", "let", "var"], "next": ["const", "let", "var"] },
-                { "blankLine": "always", "prev": "*", "next": "return" },
-                { "blankLine": "always", "prev": "*", "next": "export" },
-                { "blankLine": "never",  "prev": "export", "next": "export" },
-                { "blankLine": "always", "prev": "*", "next": "block-like" },
-                { "blankLine": "always", "prev": "block-like", "next": "*" }
-              ]
-            }'
+          yarn lint "app/**/*.{js,jsx}" ".graphqlrc.js" "vite.config.js" --fix --no-cache --ignore-pattern "\!.graphqlrc.js" --plugin @shopify/eslint-plugin --rule '{
+            "import/order": "error",
+            "import/newline-after-import": "error",
+            "padding-line-between-statements": ["error",
+              { "blankLine": "always", "prev": ["const", "let", "var"], "next": "*"},
+              { "blankLine": "any",    "prev": ["const", "let", "var"], "next": ["const", "let", "var"]}
+              { "blankLine": "always", "prev": "*", "next": "return" },
+              { "blankLine": "always", "prev": "*", "next": "export" },
+              { "blankLine": "never",  "prev": "export", "next": "export" },
+              { "blankLine": "always", "prev": "*", "next": "block-like" },
+              { "blankLine": "always", "prev": "block-like", "next": "*" }
+            ]}'
 
       - name: Prepare files for git
         run: |
@@ -99,10 +94,6 @@ jobs:
       - name: Create Javascript PR
         run: |
           gh pr view --json mergedAt -q ".mergedAt" javascript_updates | grep -E "^$" || \
-          gh pr create \
-            -B javascript \
-            -H javascript_updates \
-            --title 'Convert template to Javascript' \
-            --body 'This is an automated PR that converts the latest changes from Typescript to Javascript'
+          gh pr create -B javascript -H javascript_updates --title 'Convert template to Javascript' --body 'This is an automated PR that converts the latest changes from Typescript to Javascript'
         env:
           GH_TOKEN: ${{ github.token }}

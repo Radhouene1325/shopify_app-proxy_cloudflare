@@ -8,11 +8,11 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        version: [20.20, 22, 24]
+        version: [18, 20]
     steps:
       - uses: actions/checkout@master
       - uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.version }}
       - name: Install
-        run: npm install
+        run: yarn install
