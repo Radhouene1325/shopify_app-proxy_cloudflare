@@ -1,17 +1,20 @@
 # Learn more about configuring your app at https://shopify.dev/docs/apps/tools/cli/configuration
 
-client_id = "b602dd1fa5dcdb959dab19e8db82aded"
-application_url = "https://dresses-clark-iraqi-reserve.trycloudflare.com"
+client_id = "4441b1ea651b15b8b9ab54ac519683ab"
+name = "discount-disc"
+application_url = "https://cloudflare-workers-app.radhouenekhalfa.workers.dev"
 embedded = true
-name = "Cloudflare Workers App"
-handle = "cloudflare-workers-app"
+
+[app_proxy]
+url = "https://cloudflare-workers-app.radhouenekhalfa.workers.dev/app/discounts"
+subpath = "discounts"
+prefix = "apps"
 
 [build]
-include_config_on_deploy = true
-dev_store_url = "order-pause-demo.myshopify.com"
+automatically_update_urls_on_dev = true
 
 [webhooks]
-api_version = "2025-01"
+api_version = "2024-04"
 
   [[webhooks.subscriptions]]
   topics = [ "app/uninstalled" ]
@@ -22,15 +25,10 @@ api_version = "2025-01"
   uri = "/webhooks/app/scopes_update"
 
 [access_scopes]
-# Learn more at https://shopify.dev/docs/apps/tools/cli/configuration#access_scopes
-scopes = "write_products"
+scopes = "write_app_proxy,read_app_proxy,read_discounts,write_discounts,read_price_rules,write_price_rules,read_products,write_products,read_customers,write_customers,read_orders,write_orders,read_analytics,read_inventory,read_locations,read_metaobjects,write_metaobjects"
 
 [auth]
-redirect_urls = [
-  "https://dresses-clark-iraqi-reserve.trycloudflare.com/auth/callback",
-  "https://dresses-clark-iraqi-reserve.trycloudflare.com/auth/shopify/callback",
-  "https://dresses-clark-iraqi-reserve.trycloudflare.com/api/auth/callback"
+redirect_urls = [ 
+  "https://cloudflare-workers-app.radhouenekhalfa.workers.dev/api/auth",
+  "https://cloudflare-workers-app.radhouenekhalfa.workers.dev/auth/callback"
 ]
-
-[pos]
-embedded = false
